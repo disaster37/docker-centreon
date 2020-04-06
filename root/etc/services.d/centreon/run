@@ -1,0 +1,20 @@
+#!/usr/bin/with-contenv bash
+
+
+systemctl restart rh-php72-php-fpm
+systemctl restart httpd24-httpd
+systemctl restart mariadb
+systemctl restart centreon
+systemctl restart snmpd
+systemctl restart snmptrapd
+systemctl restart centcore
+systemctl restart centreontrapd
+systemctl restart cbd
+systemctl restart centengine
+
+
+
+sleep 30
+sh /init_centreon.sh &
+
+tail -f /dev/null

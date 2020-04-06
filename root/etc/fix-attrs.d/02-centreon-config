@@ -1,0 +1,3 @@
+# /etc/centreon true centreon:apache 0665 0775
+# /etc/centreon-engine true centreon-engine:centreon-engine 0665 0775
+# /etc/centreon-broker true centreon-broker:centreon-broker 0665 0775

@@ -1,0 +1,9 @@
+[Unit]
+Description=S6 overlay
+
+
+[Service]
+ExecStart=/init
+
+[Install]
+WantedBy=multi-user.target
