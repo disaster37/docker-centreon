@@ -42,4 +42,5 @@ if [ ! -f "/etc/crentreon/.init" ]; then
     echo "Setup is finished"
 
     touch /etc/centreon/.init
+    touch /usr/share/centreon/www/install_finish.html
 fi
