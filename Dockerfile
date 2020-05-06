@@ -6,7 +6,7 @@ ENV \
 
 # Centreon
 RUN \
-  yum install -y wget &&\
+  yum install -y wget git &&\
   yum install -y centos-release-scl &&\
   yum install -y http://yum.centreon.com/standard/19.10/el7/stable/noarch/RPMS/centreon-release-19.10-1.el7.centos.noarch.rpm &&\
   yum install -y centreon &&\
@@ -36,6 +36,18 @@ RUN curl -Lo /tmp/s6-overlay-amd64.tar.gz "https://github.com/just-containers/s6
 
 COPY root /
 RUN systemctl enable s6-overlay
+
+# Temporary fix API
+RUN \
+    cd /tmp &&\
+    git clone https://github.com/disaster37/centreon.git &&\
+    cd centreon &&\
+    git checkout feature/getparam &&\
+    mv www/class/centreon-clapi /usr/share/centreon/www/class/centreon-clapi &&\
+    mv lib/Centreon /usr/share/centreon/lib/Centreon &&\
+    cd /tmp &&\
+    rm -rf /tmp/centreon
+
 
 # Manage persistant data
 #RUN \
