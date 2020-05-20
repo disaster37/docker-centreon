@@ -43,8 +43,8 @@ RUN \
     git clone https://github.com/disaster37/centreon.git &&\
     cd centreon &&\
     git checkout feature/getparam &&\
-    mv www/class/centreon-clapi /usr/share/centreon/www/class/centreon-clapi &&\
-    mv lib/Centreon /usr/share/centreon/lib/Centreon &&\
+    mv www/class/centreon-clapi /usr/share/centreon/www/class/ &&\
+    mv lib/Centreon /usr/share/centreon/lib/ &&\
     cd /tmp &&\
     rm -rf /tmp/centreon
 

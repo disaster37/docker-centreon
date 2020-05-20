@@ -16,7 +16,7 @@ wait_centreon() {
 if [ ! -f "/etc/crentreon/.init" ]; then
     wait_centreon
     echo "Starting setup centreon ..."
-    curl -c cookie.txt http://127.0.0.1/centreon/install/install.php
+    curl -L -c cookie.txt http://127.0.0.1/centreon/install/install.php
     curl -b cookie.txt http://127.0.0.1/centreon/install/steps/step.php?action=nextStep
     curl -b cookie.txt http://127.0.0.1/centreon/install/steps/step.php?action=nextStep
     curl -b cookie.txt -vvv -XPOST -F "install_dir_engine=/usr/share/centreon-engine" -F "centreon_engine_stats_binary=/usr/sbin/centenginestats" -F "monitoring_var_lib=/var/lib/centreon-engine" -F "centreon_engine_connectors=/usr/lib64/centreon-connector" -F "centreon_engine_lib=/usr/lib64/centreon-engine" -F "centreonplugins=/usr/lib/centreon/plugins/" http://127.0.0.1/centreon/install/steps/process/process_step3.php
