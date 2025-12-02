@@ -1,4 +1,4 @@
-FROM centos:7
+FROM rockylinux:9
 
 ENV \
     LANG=C.UTF-8 \
@@ -6,11 +6,19 @@ ENV \
 
 # Centreon
 RUN \
-  yum install -y wget git &&\
-  yum install -y centos-release-scl &&\
-  yum install -y http://yum.centreon.com/standard/19.10/el7/stable/noarch/RPMS/centreon-release-19.10-1.el7.centos.noarch.rpm &&\
-  yum install -y centreon &&\
-  yum clean all
+  dnf install -y wget git &&\
+  dnf install -y dnf-plugins-core &&\
+  dnf install -y  epel-release &&\
+  dnf config-manager --set-enabled crb &&\
+  dnf module reset php &&\
+  dnf module install -y php:8.2 &&\
+  dnf module enable -y mariadb:10.11 &&\
+  dnf config-manager --add-repo https://packages.centreon.com/rpm-standard/25.10/el9/centreon-25.10.repo &&\
+  dnf clean all --enablerepo=* &&\
+  dnf update -y &&\
+  dnf install -y centreon-mariadb centreon &&\
+  systemctl daemon-reload &&\
+  dnf clean all
 
 # Configure Centreon
 RUN \
@@ -28,36 +36,5 @@ RUN \
   systemctl enable centreon &&\
   systemctl enable mariadb
 
-# Install s6-overlay
-ENV S6_VERSION "v1.21.2.1"
-RUN curl -Lo /tmp/s6-overlay-amd64.tar.gz "https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-amd64.tar.gz" &&\
-    tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" --exclude="./sbin" &&\
-    tar xzf /tmp/s6-overlay-amd64.tar.gz -C /usr ./bin
-
-COPY root /
-RUN systemctl enable s6-overlay
-
-# Temporary fix API
-RUN \
-    cd /tmp &&\
-    git clone https://github.com/disaster37/centreon.git &&\
-    cd centreon &&\
-    git checkout feature/getparam &&\
-    rm -rf /usr/share/centreon/www/class/centreon-clapi &&\
-    rm -rf /usr/share/centreon/lib/Centreon &&\
-    mv www/class/centreon-clapi /usr/share/centreon/www/class/ &&\
-    mv lib/Centreon /usr/share/centreon/lib/ &&\
-    cd /tmp &&\
-    rm -rf /tmp/centreon
-
-
-# Manage persistant data
-#RUN \
-#    mv /etc/centreon /etc/centreon.origin &&\
-#    mv /etc/centreon-engine /etc/centreon-engine.origin &&\
-#    mv /etc/centreon-broker /etc/centreon-broker.origin &&\
-#    mv /var/lib/mysql /var/lib/mysql.origin
-
-#VOLUME ["/var/lib/mysql", "/etc/centreon", "/etc/centreon-engine", "/etc/centreon-broker"]
 
 CMD ["/usr/sbin/init"]
