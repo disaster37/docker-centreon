@@ -1,4 +1,4 @@
-FROM rockylinux:9
+FROM almalinux:9
 
 ENV \
     LANG=C.UTF-8 \
