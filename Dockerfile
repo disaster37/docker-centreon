@@ -1,8 +1,7 @@
 FROM almalinux:9
 
 ENV \
-    LANG=C.UTF-8 \
-    S6_BEHAVIOUR_IF_STAGE2_FAILS=2
+    LANG=C.UTF-8
 
 # Centreon
 RUN \
@@ -18,6 +17,9 @@ RUN \
   dnf update -y &&\
   dnf install -y centreon-mariadb centreon &&\
   dnf clean all
+
+# Secure database
+COPY securemariadb.sh /tmp/securemariadb.sh
 
 # Configure Centreon
 RUN \
